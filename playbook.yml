@@ -1,0 +1,23 @@
+- hosts: ubuntu-django
+  tasks:
+  - name: Instalando o Python e virtualenv
+    apt:
+      pkg: 
+      - python3
+      - virtualenv
+      update_cache: yes
+    become: yes
+  - name: Instalando Dependencias com Pip (Django e Rest)
+    pip:
+      virtualenv: /home/ubuntu/dj/venv
+      name:
+        - django
+        - djangorestframework
+  - name: Iniciando o Projeto
+    shell: '. /home/ubuntu/dj/venv/bin/activate; django-admin startproject setup /home/ubuntu/dj'
+  - name: Alterando o Allowed Hosts do Settings.py
+    lineinfile: 
+      path: /home/ubuntu/dj/setup/settings.py
+      regexp: 'ALLOWED_HOSTS'
+      line: 'ALLOWED_HOSTS = ["*"]'
+      backrefs: yes
